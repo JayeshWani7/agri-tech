@@ -401,6 +401,22 @@ export default function Home() {
       setCurrentCard(currentCard - 1);
     }
   };
+  
+
+  const cropVideos = {
+    wheat: "https://www.youtube.com/embed/AonJkhqCRwk",
+    rice: "https://www.youtube.com/embed/J_mMS3EkHok",
+    jowar: "https://www.youtube.com/embed/U4odgvVCblc"
+  };
+  
+
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 dark:from-green-900 dark:to-green-800">
@@ -507,6 +523,23 @@ export default function Home() {
                   Next
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {selectedCrop && (
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-8 backdrop-blur-lg bg-white/30 dark:bg-black/30 border border-white/20">
+              <h3 className="text-2xl font-bold mb-6 capitalize">{selectedCrop}</h3>
+              <div className="aspect-w-16 aspect-h-9">
+                <iframe
+                  className="w-full h-64"
+                  src={cropVideos[selectedCrop]}
+                  title={`${selectedCrop} growing guide`}
+                  frameBorder="0"
+                  allowFullScreen
+                ></iframe>
               </div>
             </Card>
           </div>
