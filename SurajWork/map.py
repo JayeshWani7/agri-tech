@@ -1,5 +1,6 @@
 import rasterio
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 import cv2
 from rasterio.plot import show
@@ -45,17 +46,30 @@ def classify_land_use(image_path, num_classes=4):
         classified_image = labels.reshape(img.shape[1], img.shape[2])  # Reshape back
     return classified_image
 
-# Save and visualize results
-def save_and_show(data, filename, cmap="viridis"):
+# Function to extract coordinates (bounding box)
+def get_coordinates(dataset):
+    bounds = dataset.bounds  # Get min/max coordinates
+    coord_str = f"{bounds.left:.2f}_{bounds.bottom:.2f}_{bounds.right:.2f}_{bounds.top:.2f}"
+    return coord_str
+
+# Function to save and visualize results inside a coordinate folder
+def save_and_show(data, folder_path, filename, cmap="viridis"):
+    os.makedirs(folder_path, exist_ok=True)  # Ensure directory exists
+    file_path = os.path.join(folder_path, filename)
+
     plt.imshow(data, cmap=cmap)
     plt.colorbar()
     plt.title(filename)
-    plt.savefig(filename)
+    plt.savefig(file_path)
     plt.show()
 
 # Main function to process image
 def process_satellite_image(image_path, dem_path):
     dataset = load_image(image_path)
+
+    # Extract coordinates
+    coordinates = get_coordinates(dataset)
+    folder_path = os.path.join("Processed_Images", coordinates)  # Create folder
 
     # Extract bands
     red = dataset.read(3).astype(np.float32)  # Red band (Landsat-8 Band 4)
@@ -74,13 +88,15 @@ def process_satellite_image(image_path, dem_path):
     # Classify land cover
     land_cover = classify_land_use(image_path)
 
-    # Save and visualize results
-    save_and_show(ndvi, "NDVI_Vegetation_Health.png", cmap="RdYlGn")
-    save_and_show(ndmi, "NDMI_Soil_Moisture.png", cmap="Blues")
-    save_and_show(ndwi, "NDWI_Water_Resources.png", cmap="coolwarm")
-    save_and_show(elevation, "Elevation_Map.png", cmap="terrain")
-    save_and_show(slope, "Slope_Map.png", cmap="gray")
-    save_and_show(land_cover, "Land_Cover_Map.png", cmap="tab10")
+    # Save and visualize results in the folder
+    save_and_show(ndvi, folder_path, "NDVI_Vegetation_Health.png", cmap="RdYlGn")
+    save_and_show(ndmi, folder_path, "NDMI_Soil_Moisture.png", cmap="Blues")
+    save_and_show(ndwi, folder_path, "NDWI_Water_Resources.png", cmap="coolwarm")
+    save_and_show(elevation, folder_path, "Elevation_Map.png", cmap="terrain")
+    save_and_show(slope, folder_path, "Slope_Map.png", cmap="gray")
+    save_and_show(land_cover, folder_path, "Land_Cover_Map.png", cmap="tab10")
+
+    print(f"Processed images saved in: {folder_path}")
 
 # Run the script with your image paths
 satellite_image_path = "agri-tech.tif"
