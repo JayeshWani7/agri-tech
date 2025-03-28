@@ -5,6 +5,20 @@ import Link from 'next/link';
 function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+      {/* Navbar */}
+      <nav className="bg-green-600 text-white py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <div className="text-2xl font-bold">AgriTech</div>
+          <div className="space-x-4">
+            <Link href="/guide">Farmer's Guide</Link>
+            <Link href="https://timely-brioche-a6638b.netlify.app/">Condition Analysis System</Link>
+            <Link href="">Gamified Simulation</Link>
+            <Link href="https://algae-biofuel-advisor.vercel.app/">Algae Biofuel Advisor</Link>
+            <Link href="https://wheatwise-buddy.lovable.app/">Chatbot</Link>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
